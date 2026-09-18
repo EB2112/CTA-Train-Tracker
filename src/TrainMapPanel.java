@@ -1,0 +1,85 @@
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class TrainMapPanel extends JPanel {
+
+    public static int canvasWidth = 1500;
+    public static int canvasHeight = 1200;
+    private List<Train> trains;
+    private TrainLayout trainLayout = new TrainLayout();
+    private final int linesSize = trainLayout.lines.trainLines.size();
+    private final ArrayList<TrainLine>  trainLines = trainLayout.lines.trainLines;
+
+    public TrainMapPanel(){
+       setPreferredSize(new Dimension(this.canvasWidth, this.canvasHeight));
+
+
+    }
+
+    public void setTrains(List<Train> newTrains){
+        this.trains = newTrains;
+        repaint();
+    }
+
+
+    @Override
+    //plots all the stations on the panel with names and markers
+    protected void paintComponent(Graphics g){
+
+        super.paintComponent(g);
+        Graphics2D g2D = (Graphics2D) g;
+        int radius = 5;
+
+//        for(int i = 0; i < RedLineLayout.stations.size() - 1; i ++){
+//            g2D.setColor(Color.red);
+//            g2D.setStroke(new BasicStroke(6, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+//            Station a = RedLineLayout.stations.get(i);
+//            Station b = RedLineLayout.stations.get(i + 1);
+//            g2D.drawLine(a.xCoordinate(), a.yCoordinate(), b.xCoordinate(), b.yCoordinate());
+//
+//        }
+//        for(int i = 0; i < RedLineLayout.stations.size(); i ++){
+//            Station station = RedLineLayout.stations.get(i);
+//            g2D.setColor(Color.white);
+//            g2D.fillOval(station.xCoordinate() - radius, station.yCoordinate() - radius, radius*2, radius*2);
+//            g2D.setColor(Color.BLACK);
+//            g2D.drawOval(station.xCoordinate() - radius, station.yCoordinate() - radius, radius*2, radius*2);
+//            g2D.drawString(station.name(), station.xCoordinate() + 10, station.yCoordinate() + 4);
+//        }
+
+        for(int i = 0; i < linesSize; i++){
+           TrainLine currentLine = trainLines.get(i);
+
+        for(int j = 0; j < currentLine.getPlottedStations().size() - 1 ; j ++){
+            g2D.setColor(currentLine.getColor());
+            g2D.setStroke(new BasicStroke(6, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            Station a = currentLine.getPlottedStations().get(j);
+            Station b = currentLine.getPlottedStations().get(j + 1);
+            g2D.drawLine(a.xCoordinate(), a.yCoordinate(), b.xCoordinate(), b.yCoordinate());
+
+        }
+        for(int j = 0; j < currentLine.getPlottedStations().size(); j ++){
+            Station station = currentLine.getPlottedStations().get(j);
+            g2D.setColor(Color.white);
+            g2D.fillOval(station.xCoordinate() - radius, station.yCoordinate() - radius, radius*2, radius*2);
+            g2D.setColor(Color.BLACK);
+            g2D.drawOval(station.xCoordinate() - radius, station.yCoordinate() - radius, radius*2, radius*2);
+            g2D.drawString(station.name(), station.xCoordinate() + 10, station.yCoordinate() + 4);
+        }
+        }
+    }
+
+    public static void main(String[] args) {
+        JFrame jFrame = new JFrame("CTA Map");
+        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        TrainMapPanel map = new TrainMapPanel();
+        jFrame.add(map);
+        jFrame.pack();
+        jFrame.setVisible(true);
+
+
+
+    }
+}
