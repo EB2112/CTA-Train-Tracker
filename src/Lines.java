@@ -5,7 +5,7 @@ import java.util.Map;
 public class Lines {
     public ArrayList<TrainLine> trainLines = new ArrayList<>();
     private static Map<String, TrainStation[]> LINESANDSTATIONS = new LinkedHashMap<>();
-
+    private Map<String, TrainLine> trainLineLookUp = new LinkedHashMap<>();
 
     public Lines(){
         LINESANDSTATIONS.put("Red", new TrainStation[]{new TrainStation("Howard", 40900),
@@ -188,12 +188,33 @@ public class Lines {
                 {new TrainStation("Skokie", 40140),
                         new TrainStation("Oakton-Skokie", 41680),
                         new TrainStation("Howard", 40900)});
-        LINESANDSTATIONS.forEach((lineName, stations) -> trainLines.add(new TrainLine(lineName, stations)));
+        LINESANDSTATIONS.forEach((lineName, stations) -> {
+            TrainLine line = new TrainLine(lineName, stations);
+            trainLines.add(line);
+            trainLineLookUp.put(lineName.toUpperCase(), line);
+        });
 
 
         }
 
+    public TrainLine getTrainLineLookUp(String line) {
+
+        switch (line){
+            case ("brn") -> line = "brown";
+            case ("g") -> line = "green";
+            case("org") -> line = "orange";
+            case("p") -> line = "purple";
+            case("y") -> line = "yellow";
+            default -> line = line;
+        }
+
+
+
+        return trainLineLookUp.get(line.toUpperCase());
     }
+
+
+}
 
 
 

@@ -42,7 +42,7 @@ public class TrainLayout {
             }
             baseX += 160;
             lines.trainLines.get(i).setPlottedStations(stations);
-            System.out.println(lines.trainLines.get(i).getPlottedStations().size());
+
         }
 
 

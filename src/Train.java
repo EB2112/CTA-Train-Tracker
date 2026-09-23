@@ -13,6 +13,8 @@ public class Train {
     public double heading;        // compass heading in degrees, useful if you want to rotate a marker icon
     public double lat;
     public double lon;
+    public int direction;
+
 
     @Override
     public String toString(){

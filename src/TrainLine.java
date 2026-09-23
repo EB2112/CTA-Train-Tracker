@@ -1,11 +1,13 @@
 import java.awt.*;
 import java.util.List;
+import java.util.Map;
 
 public class TrainLine {
-   private String name;
-   private TrainStation[] stations;
-   private List<Station> plottedStations;
-   private java.awt.Color color;
+    private String name;
+    private TrainStation[] stations;
+    private List<Station> plottedStations;
+    private java.awt.Color color;
+
     public TrainLine(String name, TrainStation[] stations) {
         this.name = name;
         this.stations = stations;
@@ -29,7 +31,7 @@ public class TrainLine {
     }
 
     public void setColor(String color) {
-        switch (color.toLowerCase()){
+        switch (color.toLowerCase()) {
             case "red" -> this.color = Color.red;
             case "blue" -> this.color = Color.blue;
             case "brown" -> this.color = Color.decode("#964B00");
@@ -44,5 +46,15 @@ public class TrainLine {
 
     public Color getColor() {
         return color;
+    }
+
+    public int indexOf(int stationID) {
+        for (int i = 0; i < plottedStations.size(); i++) {
+            if (plottedStations.get(i).ID() == stationID) {
+                return i;
+            }
+        }
+        return -1;
+
     }
 }

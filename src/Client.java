@@ -53,7 +53,7 @@ public class Client {
     private List<Train> parseTrains(String xml) throws Exception{
 
         List<Train> trains = new ArrayList<>();
-        System.out.println(xml + "");
+
         //api returns xml doc so we must parse through to find trains
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -96,7 +96,8 @@ public class Client {
         train.arrivalTime = text(el, "arrT");
         train.isApproaching = "1".equals(text(el, "isApp"));
         train.isDelayed = "1".equals(text(el, "isDly"));
-
+        String direction = text(el, "trDr");
+        train.direction = direction.isEmpty() ? 1 : Integer.parseInt(direction);
  
         String lat = text(el, "lat");
         String lon = text(el, "lon");
