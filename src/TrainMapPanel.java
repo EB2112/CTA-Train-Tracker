@@ -8,9 +8,8 @@ public class TrainMapPanel extends JPanel {
     public static int canvasWidth = 1500;
     public static int canvasHeight = 1200;
     private List<Train> trains;
-    private TrainLayout trainLayout = new TrainLayout();
-    private final int linesSize = trainLayout.lines.trainLines.size();
-    private final ArrayList<TrainLine>  trainLines = trainLayout.lines.trainLines;
+    private final int linesSize = TrainLayout.lines.trainLines.size();
+    private final ArrayList<TrainLine>  trainLines = TrainLayout.lines.trainLines;
 
     public TrainMapPanel(){
        setPreferredSize(new Dimension(this.canvasWidth, this.canvasHeight));
@@ -32,22 +31,6 @@ public class TrainMapPanel extends JPanel {
         Graphics2D g2D = (Graphics2D) g;
         int radius = 5;
 
-//        for(int i = 0; i < RedLineLayout.stations.size() - 1; i ++){
-//            g2D.setColor(Color.red);
-//            g2D.setStroke(new BasicStroke(6, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-//            Station a = RedLineLayout.stations.get(i);
-//            Station b = RedLineLayout.stations.get(i + 1);
-//            g2D.drawLine(a.xCoordinate(), a.yCoordinate(), b.xCoordinate(), b.yCoordinate());
-//
-//        }
-//        for(int i = 0; i < RedLineLayout.stations.size(); i ++){
-//            Station station = RedLineLayout.stations.get(i);
-//            g2D.setColor(Color.white);
-//            g2D.fillOval(station.xCoordinate() - radius, station.yCoordinate() - radius, radius*2, radius*2);
-//            g2D.setColor(Color.BLACK);
-//            g2D.drawOval(station.xCoordinate() - radius, station.yCoordinate() - radius, radius*2, radius*2);
-//            g2D.drawString(station.name(), station.xCoordinate() + 10, station.yCoordinate() + 4);
-//        }
 
         for(int i = 0; i < linesSize; i++){
            TrainLine currentLine = trainLines.get(i);
@@ -75,32 +58,30 @@ public class TrainMapPanel extends JPanel {
     }
     private void drawCurrentTrains(Graphics2D g2d){
 
-        for(int i = 0; i < trains.size(); i ++){
-            Train train = trains.get(i);
-            TrainLine trainLine = trainLayout.lines.getTrainLineLookUp(train.routeName);
+        for (Train train : trains) {
+            TrainLine trainLine = TrainLayout.lines.getTrainLineLookUp(train.routeName);
 
             int trainY;
-            if(trainLine != null){
+            if (trainLine != null) {
 
                 int nextTrainIndex = trainLine.indexOf(train.nextStationId);
-                if(nextTrainIndex != -1){
+                if (nextTrainIndex != -1) {
                     Station nextStation = trainLine.getPlottedStations().get(nextTrainIndex);
                     g2d.setColor(trainLine.getColor());
                     int trainX = nextStation.xCoordinate();
-                    if(nextTrainIndex == 0 || nextTrainIndex == trainLine.getStations().length){
+                    if (nextTrainIndex == 0 || nextTrainIndex == trainLine.getStations().length) {
                         trainY = nextStation.yCoordinate();
-                    }else if(train.direction == 5){
+                    } else if (train.direction == 5) {
                         trainY = nextStation.yCoordinate() - (((canvasHeight - 80) / trainLine.getPlottedStations().size()) / 2); //half of the offset in train layout
-                    }
-                    else{
+                    } else {
                         trainY = nextStation.yCoordinate() - (((canvasHeight - 80) / trainLine.getPlottedStations().size()) / 2);
                     }
-                    int width = 10;
-                    int height = 10;
-                    int[] xIntsUp = {trainX, trainX-width/2, trainX +   width/2};
-                    int[] yIntsUp = {trainY - height/2, trainY+height/2, trainY + height/2};
-                    int[] xIntsDown = {trainX, trainX+width/2, trainX -   width/2};
-                    int[] yIntsDown = {trainY +height/2, trainY-height/2, trainY - height/2};
+                    int width = 15;
+                    int height = 15;
+                    int[] xIntsUp = {trainX, trainX - width / 2, trainX + width / 2};
+                    int[] yIntsUp = {trainY - height / 2, trainY + height / 2, trainY + height / 2};
+                    int[] xIntsDown = {trainX, trainX + width / 2, trainX - width / 2};
+                    int[] yIntsDown = {trainY + height / 2, trainY - height / 2, trainY - height / 2};
                     if (train.direction == 1) {
                         g2d.drawPolygon(xIntsUp, yIntsUp, 3);
                     } else {
@@ -110,15 +91,5 @@ public class TrainMapPanel extends JPanel {
             }
         }
     }
-    public static void main(String[] args) {
-        JFrame jFrame = new JFrame("CTA Map");
-        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        TrainMapPanel map = new TrainMapPanel();
-        jFrame.add(map);
-        jFrame.pack();
-        jFrame.setVisible(true);
 
-
-
-    }
 }

@@ -48,16 +48,7 @@ public class TrainLayout {
 
     }
 
-//    public static int indexOf(Integer stationID) {
-//        for (int i = 0; i < stations.size(); i++) {
-//            if (stations.get(i).ID() == stationID) {
-//                return i;
-//            }
-//        }
-//        return -1;
-//
-//
-//    }
+
 
     public TrainLayout(){
         buildLayout();

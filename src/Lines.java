@@ -3,6 +3,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Lines {
+    //hard coded the train lines
     public ArrayList<TrainLine> trainLines = new ArrayList<>();
     private static Map<String, TrainStation[]> LINESANDSTATIONS = new LinkedHashMap<>();
     private Map<String, TrainLine> trainLineLookUp = new LinkedHashMap<>();
