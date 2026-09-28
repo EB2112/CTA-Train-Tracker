@@ -32,13 +32,14 @@ public class Main {
         for (Train t : trains) {
             System.out.println(t);
         }
-        int timerDelay = 10000; //10 seconds
+        int timerDelay = 5000; //5 seconds
         ActionListener task = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 List<Train> trains = null;
                 try {
                     trains = client.getTrainsOnRoutes(routes);
+                    System.out.println("Updated");
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }

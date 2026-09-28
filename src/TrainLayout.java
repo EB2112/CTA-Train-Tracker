@@ -13,11 +13,11 @@ public class TrainLayout {
 
     private static void buildLayout() {
 
-        int baseX = 220;
+        int baseX = 240;
         int topMargin = 40;
         for (int i = 0; i < lines.trainLines.size(); i++) {
             List<Station> stations = new ArrayList<>();
-            int spacingY = (canvasHeight - topMargin * 2) / (lines.trainLines.get(i).getStations().length);
+            int spacingY = 70;
 
 
 //            //jog is a little turn in the map to represent the loop for now might just make it all straight
