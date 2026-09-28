@@ -5,7 +5,7 @@ import java.util.List;
 
 public class TrainMapPanel extends JPanel {
 
-    public static int canvasWidth = 1500;
+    public static int canvasWidth = 1000;
     public static int canvasHeight = 2310;
     private List<Train> trains;
     private final int linesSize = TrainLayout.lines.trainLines.size();

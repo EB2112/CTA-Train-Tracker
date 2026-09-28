@@ -31,7 +31,7 @@ public class Main {
         for (Train t : trains) {
             System.out.println(t);
         }
-        int timerDelay = 2000; //5 seconds
+        int timerDelay = 5000; //5 seconds
         ActionListener task = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
