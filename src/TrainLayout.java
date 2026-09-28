@@ -5,7 +5,9 @@ public class TrainLayout {
 
     public static Lines lines = new Lines();
     public static final int canvasHeight = TrainMapPanel.canvasHeight;
-
+    static {
+        buildLayout();
+    }
 
 
 

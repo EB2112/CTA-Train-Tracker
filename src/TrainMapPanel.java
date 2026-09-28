@@ -9,7 +9,7 @@ public class TrainMapPanel extends JPanel {
     public static int canvasHeight = 1200;
     private List<Train> trains;
     private final int linesSize = TrainLayout.lines.trainLines.size();
-    private final ArrayList<TrainLine>  trainLines = TrainLayout.lines.trainLines;
+    private  ArrayList<TrainLine>  trainLines = TrainLayout.lines.trainLines;
 
     public TrainMapPanel(){
        setPreferredSize(new Dimension(this.canvasWidth, this.canvasHeight));
@@ -26,9 +26,12 @@ public class TrainMapPanel extends JPanel {
     @Override
     //plots all the stations on the panel with names and markers
     protected void paintComponent(Graphics g){
-
         super.paintComponent(g);
         Graphics2D g2D = (Graphics2D) g;
+
+        g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); //antialiasing for smoother drawings
+        g2D.setColor(Color.decode("#708090"));
+        g2D.fillRect(0,0, getWidth(), getHeight());
         int radius = 5;
 
 

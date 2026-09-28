@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -15,9 +16,10 @@ public class Main {
         String apiKey = args[0];
         String[] routes = {"red", "blue", "brn", "g", "org", "p", "pink", "y"};
 
-
         Client client = new Client(apiKey);
+        List<Train> trains = client.getTrainsOnRoutes(routes);
         TrainMapPanel map = new TrainMapPanel();
+        map.setTrains(trains);
         JFrame jFrame = new JFrame("CTA Map");
         JScrollPane jScrollPane = new JScrollPane(map);
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -25,8 +27,7 @@ public class Main {
       jFrame.setSize(1000, 1200);
         jFrame.setVisible(true);
 
-        List<Train> trains = client.getTrainsOnRoutes(routes);
-        map.setTrains(trains);
+
         System.out.println("Found " + trains.size() + " trains:");
         for (Train t : trains) {
             System.out.println(t);
