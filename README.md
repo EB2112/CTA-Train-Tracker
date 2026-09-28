@@ -2,7 +2,7 @@
 
 A Java Swing desktop app that pulls live train data from the Chicago Transit Authority's Train Tracker API and renders it as a schematic system map — every 'L' line drawn as its own column of stations, with live train markers that move as trains approach their next stop.
 
-![gif](https://github.com/EB2112/CTA-Train-Tracker/blob/main/assets/ctatrains.gif) 
+![picture](https://github.com/EB2112/CTA-Train-Tracker/blob/main/assets/cta%20trains.png) 
 ## What it does
 
 - Polls the CTA Train Tracker `ttpositions.aspx` (Locations) endpoint every 10–15 seconds for all 8 rail lines at once
