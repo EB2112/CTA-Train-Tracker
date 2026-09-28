@@ -28,7 +28,7 @@ public class TrainMapPanel extends JPanel {
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
         Graphics2D g2D = (Graphics2D) g;
-        g2D.setFont(new Font("Monospaced", Font.BOLD, 12));
+        g2D.setFont(new Font("Monospaced", Font.BOLD, 13));
         g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); //antialiasing for smoother drawings
         g2D.setColor(Color.decode("#2b2b2b"));
         g2D.fillRect(0,0, getWidth(), getHeight());
@@ -55,8 +55,16 @@ public class TrainMapPanel extends JPanel {
             g2D.setColor(Color.BLACK);
             g2D.drawOval(station.xCoordinate() - radius, station.yCoordinate() - radius, radius*2, radius*2);
             g2D.setColor(Color.white);
+            String[] words = station.name().split(" ");
 
-            g2D.drawString(station.name(), station.xCoordinate() + 10, station.yCoordinate() + 4);
+            if(words.length <= 2){ //helps with longer names
+                g2D.drawString(station.name(), station.xCoordinate() + 15, station.yCoordinate() + 4);
+            }else if(words.length > 2){
+                for (int y = 1; y < words.length + 1; y++ ){
+                    g2D.drawString(words[y-1], station.xCoordinate() + 15, station.yCoordinate() + (12 * y));
+                }
+            }
+
 
 
         }

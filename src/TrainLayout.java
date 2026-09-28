@@ -42,7 +42,7 @@ public class TrainLayout {
 //                }
                 stations.add(new Station(stationName, x, y, stationId));
             }
-            baseX += 160;
+            baseX += 190;
             lines.trainLines.get(i).setPlottedStations(stations);
 
         }
