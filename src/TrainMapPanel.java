@@ -153,6 +153,7 @@ public class TrainMapPanel extends JPanel {
                 if (distance <= radius) {
                     System.out.println("Clicked " + station.name());
                     System.out.println(client.getStationArrivals(station.ID()));
+                    new PopUp(this, station.name(), client.getStationArrivals(station.ID()));
                     return;
                 }
             }

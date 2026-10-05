@@ -51,7 +51,7 @@ public class Client {
         return parseTrains(response.body());
 
     }
-    public List<String> getStationArrivals(int stationID) throws Exception {
+    public List<Arrival> getStationArrivals(int stationID) throws Exception {
         String url = ARRIVALS_URL + "?key=" + apiKeyString + "&mapid=" + stationID + "&max=3";
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -102,8 +102,8 @@ public class Client {
         return trains;
  
     }
-    private List<String> parseArrivals(String xml) throws Exception{
-        List<String> arrivals = new ArrayList<>();
+    private List<Arrival> parseArrivals(String xml) throws Exception{
+        List<Arrival> arrivals = new ArrayList<>();
         System.out.println(xml);
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -124,13 +124,14 @@ public class Client {
         for (int r = 0; r < arrivalNodes.getLength(); r++) {
             Element arrival = (Element) arrivalNodes.item(r);
 
-
+            String isApproaching = (arrival.getElementsByTagName("isApp").getLength() > 0) ? arrival.getElementsByTagName("isApp").item(0).getTextContent(): "" ;
+            boolean isApproachingValue = "1".equals(isApproaching);
             String rtValue = text(arrival, "rt");
             String destinationValue = text(arrival, "stpDe");
             String arrivalTimeValue = text(arrival, "arrT");
             String arrivalTime = parseTime(arrivalTimeValue);
             System.out.println(String.format("%s line train %s arrivng at %s", rtValue, destinationValue, arrivalTime));
-            arrivals.add(String.format("%s line train %s arrivng at %s", rtValue, destinationValue, arrivalTime));
+            arrivals.add(new Arrival(rtValue, destinationValue, arrivalTime, isApproachingValue));
 
         }
 
