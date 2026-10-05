@@ -17,7 +17,7 @@ public class Main {
 
         Client client = new Client(apiKey);
         List<Train> trains = client.getTrainsOnRoutes(routes);
-        TrainMapPanel map = new TrainMapPanel();
+        TrainMapPanel map = new TrainMapPanel(apiKey);
         map.setTrains(trains);
         JFrame jFrame = new JFrame("CTA Map");
         JScrollPane jScrollPane = new JScrollPane(map);
@@ -25,7 +25,7 @@ public class Main {
         jFrame.add(jScrollPane);
       jFrame.setSize(1000, 1200);
         jFrame.setVisible(true);
-
+        System.out.println(client.getStationArrivals(40340));
 
         System.out.println("Found " + trains.size() + " trains:");
         for (Train t : trains) {
@@ -39,6 +39,7 @@ public class Main {
                 try {
                     trains = client.getTrainsOnRoutes(routes);
                     System.out.println("Updated");
+
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }

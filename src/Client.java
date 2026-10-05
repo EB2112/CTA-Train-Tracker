@@ -9,14 +9,16 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class Client {
     
-    private static final String BASE_URL= "http://lapi.transitchicago.com/api/1.0/ttpositions.aspx";
-
+    private static final String LOCATIONS_URL= "http://lapi.transitchicago.com/api/1.0/ttpositions.aspx";
+    private static final String ARRIVALS_URL = "http://lapi.transitchicago.com/api/1.0/ttarrivals.aspx";
     private final String apiKeyString;
     private final HttpClient httpClient;
 
@@ -33,7 +35,7 @@ public class Client {
         for (String r : routeCodes){
             rtParams.append("&rt=").append(r);
         }
-        String url = BASE_URL + "?key=" + apiKeyString + rtParams;
+        String url = LOCATIONS_URL + "?key=" + apiKeyString + rtParams;
 
         HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create(url))
@@ -49,7 +51,22 @@ public class Client {
         return parseTrains(response.body());
 
     }
+    public List<String> getStationArrivals(int stationID) throws Exception {
+        String url = ARRIVALS_URL + "?key=" + apiKeyString + "&mapid=" + stationID + "&max=3";
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .GET()
+                .build();
 
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("CTA API returned HTTP " + response.statusCode());
+        }
+
+        return (parseArrivals(response.body()));
+
+    }
     private List<Train> parseTrains(String xml) throws Exception{
 
         List<Train> trains = new ArrayList<>();
@@ -85,6 +102,41 @@ public class Client {
         return trains;
  
     }
+    private List<String> parseArrivals(String xml) throws Exception{
+        List<String> arrivals = new ArrayList<>();
+        System.out.println(xml);
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.parse(new ByteArrayInputStream(xml.getBytes("UTF-8")));
+
+
+        NodeList errNodes = doc.getElementsByTagName("errCd");
+        if (errNodes.getLength() > 0) {
+            String errCd = errNodes.item(0).getTextContent();
+            if (!"0".equals(errCd)) {
+                NodeList errNm = doc.getElementsByTagName("errNm");
+                String msg = errNm.getLength() > 0 ? errNm.item(0).getTextContent() : "unknown error";
+                throw new RuntimeException("CTA API error " + errCd + ": " + msg);
+            }
+        }
+
+        NodeList arrivalNodes = doc.getElementsByTagName("eta");
+        for (int r = 0; r < arrivalNodes.getLength(); r++) {
+            Element arrival = (Element) arrivalNodes.item(r);
+
+
+            String rtValue = text(arrival, "rt");
+            String destinationValue = text(arrival, "stpDe");
+            String arrivalTimeValue = text(arrival, "arrT");
+            String arrivalTime = parseTime(arrivalTimeValue);
+            System.out.println(String.format("%s line train %s arrivng at %s", rtValue, destinationValue, arrivalTime));
+            arrivals.add(String.format("%s line train %s arrivng at %s", rtValue, destinationValue, arrivalTime));
+
+        }
+
+        return arrivals;
+    }
+
         private Train toTrain(Element el, String routeName) {
         Train train = new Train();
         train.routeName = routeName;
@@ -111,6 +163,13 @@ public class Client {
 private String text(Element parent, String tag) {
         NodeList nodes = parent.getElementsByTagName(tag);
         return nodes.getLength() > 0 ? nodes.item(0).getTextContent() : "";
+    }
+    private String parseTime(String time){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        LocalTime parsedTime = LocalTime.parse(time.substring(9), formatter) ;
+        DateTimeFormatter display = DateTimeFormatter.ofPattern("h:mm a");
+        String displayTime = parsedTime.format(display) ;
+        return displayTime;
     }
 
 

@@ -12,18 +12,25 @@ public class TrainMapPanel extends JPanel {
     private List<Train> trains;
     private final int linesSize = TrainLayout.lines.trainLines.size();
     private ArrayList<TrainLine> trainLines = TrainLayout.lines.trainLines;
-
-    public TrainMapPanel() {
+    private Client client;
+    private final String apiKey;
+    public TrainMapPanel(String apiKey) {
         setPreferredSize(new Dimension(this.canvasWidth, this.canvasHeight));
         this.addMouseListener(new MouseAdapter() {
             //click listener for eventual feature to display when next trains will be arriving
             @Override
             public void mouseClicked(MouseEvent e) {
-                clickHandler(e.getX(), e.getY(), 10);
+                try {
+                    clickHandler(e.getX(), e.getY(), 10);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+
 
             }
         });
-
+        this.apiKey = apiKey;
+        client = new Client(apiKey);
     }
 
     public void setTrains(List<Train> newTrains) {
@@ -133,7 +140,7 @@ public class TrainMapPanel extends JPanel {
         }
     }
 
-    private void clickHandler(int x, int y, int radius) {
+    private void clickHandler(int x, int y, int radius) throws Exception {
         for (TrainLine trainLine : trainLines) {
             for (Station station : trainLine.getPlottedStations()) {
                 //find distance b/t click and station coordinate using distance formula
@@ -145,6 +152,7 @@ public class TrainMapPanel extends JPanel {
 
                 if (distance <= radius) {
                     System.out.println("Clicked " + station.name());
+                    System.out.println(client.getStationArrivals(station.ID()));
                     return;
                 }
             }
