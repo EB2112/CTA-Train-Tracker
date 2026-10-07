@@ -36,8 +36,10 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 List<Train> trains = null;
+                Station selectedStation = map.getSelectedStation();
                 try {
                     trains = client.getTrainsOnRoutes(routes);
+                    map.updateStation(selectedStation);
                     System.out.println("Updated");
 
                 } catch (Exception e) {
