@@ -1,54 +1,71 @@
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 
 public class Main {
+    private static final String[] ROUTES = {"red", "blue", "brn", "g", "org", "p", "pink", "y"};
+    private static final int TIMER_DELAY = 10000;
+    private static boolean fetching = false;
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm:ss a");
     public static void main(String[] args) throws Exception {
+
         if (args.length < 1) {
             System.out.println("Usage: java Main <apiKey>");
 
             return;
         }
- 
+
         String apiKey = args[0];
-        String[] routes = {"red", "blue", "brn", "g", "org", "p", "pink", "y"};
-
         Client client = new Client(apiKey);
-        List<Train> trains = client.getTrainsOnRoutes(routes);
-        TrainMapPanel map = new TrainMapPanel(apiKey);
-        map.setTrains(trains);
-        JFrame jFrame = new JFrame("CTA Map");
-        JScrollPane jScrollPane = new JScrollPane(map);
-        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        jFrame.add(jScrollPane);
-      jFrame.setSize(1000, 1200);
-        jFrame.setVisible(true);
-        System.out.println(client.getStationArrivals(40340));
 
-        System.out.println("Found " + trains.size() + " trains:");
-        for (Train t : trains) {
-            System.out.println(t);
+        SwingUtilities.invokeLater(() -> {
+            TrainMapPanel map = new TrainMapPanel(apiKey);
+            JFrame jFrame = new JFrame("CTA Map");
+            JScrollPane jScrollPane = new JScrollPane(map);
+            jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            jFrame.add(jScrollPane);
+            jFrame.setSize(1000, 1200);
+            jFrame.setVisible(true);
+
+            refresh(client, map, jFrame);
+            new Timer(TIMER_DELAY, e -> refresh(client, map, jFrame)).start();
+        });
+
+    }
+
+
+    private static void refresh(Client client, TrainMapPanel map, JFrame jFrame) {
+        if (fetching) {
+            return;
         }
-        int timerDelay = 5000; //5 seconds
-        ActionListener task = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                List<Train> trains = null;
-                Station selectedStation = map.getSelectedStation();
-                try {
-                    trains = client.getTrainsOnRoutes(routes);
-                    map.updateStation(selectedStation);
-                    System.out.println("Updated");
+        fetching = true;
 
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-                map.setTrains(trains);
+
+        new SwingWorker<List<Train>, Void>() {
+            @Override
+            protected List<Train> doInBackground() throws Exception {
+                return client.getTrainsOnRoutes(ROUTES);
             }
-        };
-        new Timer(timerDelay, task).start();
+
+            @Override
+            protected void done() {
+                try {
+                    map.setTrains(get());
+                    jFrame.setTitle("CTA Map (last updated: " + LocalTime.now().format(formatter) + ")");
+                    map.refreshOpenStation();
+                } catch (Exception exception) {
+                    System.out.println("Fetch failed: " + exception.getMessage());
+                } finally {
+                    fetching = false;
+                }
+            }
+
+        }.execute();
     }
 }
+
+
+
 

@@ -51,7 +51,7 @@ public class Client {
         return parseTrains(response.body());
 
     }
-    public List<Arrival> getStationArrivals(int stationID) throws Exception {
+    public ArrayList<Arrival> getStationArrivals(int stationID) throws Exception {
         String url = ARRIVALS_URL + "?key=" + apiKeyString + "&mapid=" + stationID + "&max=3";
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -64,7 +64,7 @@ public class Client {
             throw new RuntimeException("CTA API returned HTTP " + response.statusCode());
         }
 
-        return (parseArrivals(response.body()));
+        return (ArrayList<Arrival>) parseArrivals(response.body());
 
     }
     private List<Train> parseTrains(String xml) throws Exception{
